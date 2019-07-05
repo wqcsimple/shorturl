@@ -7,7 +7,13 @@ import (
 	"shorturl/common"
 )
 
-func Upload(c *gin.Context) {
+var File = &FileController{}
+
+type FileController struct {
+	BaseController
+}
+
+func (i * FileController) Upload(c *gin.Context) {
 	file, err := c.FormFile("file")
 	common.CheckError(err)
 

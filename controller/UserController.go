@@ -5,11 +5,16 @@ import (
 	"log"
 	"net/http"
 	"shorturl/model"
+	"strconv"
 )
 
+var User = &UserController{}
 
+type UserController struct {
+	BaseController
+}
 
-func Login(c *gin.Context) {
+func (i *UserController) Login(c *gin.Context) {
 	username := c.PostForm("username")
 	password := c.PostForm("password")
 
@@ -22,21 +27,20 @@ func Login(c *gin.Context) {
 	})
 }
 
-func UserInfo(c *gin.Context) {
-	userId := c.Query("id")
+func (i *UserController) UserInfo(c *gin.Context) {
+	page := c.DefaultQuery("page", "0")
 
-	log.Println("id -> ", userId)
+	var pageInt, _ = strconv.Atoi(page)
+	var limit = 10
+	var offset = pageInt * limit
 
-	var user model.User
-	model.DB.First(&user)
+	//var user model.User
 
-	var rst = make(map[string]model.User)
-	rst["user"] = user
+	users := make([]*model.User, 0)
 
-	c.JSON(http.StatusOK, gin.H{
-		"code": 0,
-		"data": rst,
+	model.DB.Table("user").Where("weight >= ?", 0).Offset(offset).Limit(limit).Order("id asc").Find(&users)
+
+	i.success(c, gin.H{
+		"user": users,
 	})
 }
-
-

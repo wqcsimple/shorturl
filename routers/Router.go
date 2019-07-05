@@ -2,7 +2,7 @@ package routers
 
 import (
 	"github.com/gin-gonic/gin"
-	"shorturl/controller"
+	. "shorturl/controller"
 )
 
 func Route(Router *gin.Engine) {
@@ -11,15 +11,14 @@ func Route(Router *gin.Engine) {
 
 	user := Router.Group("client/1/user")
 	{
-		user.POST("login", controller.Login)
-		user.GET("info", controller.UserInfo)
+		user.POST("login", User.Login)
+		user.GET("info", User.UserInfo)
 	}
 
 	file := Router.Group("file")
 	{
-		file.POST("upload", controller.Upload)
+		file.POST("upload", File.Upload)
 	}
-
 
 	//router.GET("/ping", func(c *gin.Context) {
 	//	c.JSON(http.StatusOK, gin.H{
